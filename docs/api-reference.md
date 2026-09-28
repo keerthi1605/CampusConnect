@@ -15,6 +15,7 @@ This file grows with each phase.
 |---|---|---|---|---|
 | GET | `/health` | public | 1 | Service status, DB connection state, uptime |
 | GET | `/meta/branches` | public | 3 | Allowed branch values |
+| GET | `/meta/job-types` | public | 4 | Allowed job type values |
 
 ## Authentication
 
@@ -33,11 +34,20 @@ This file grows with each phase.
 | GET | `/students` | admin | 3 | List with `q`, `branch`, `batchYear`, `minCgpa`, `maxCgpa`, `maxBacklogs`, `sort`, `page`, `limit` |
 | GET | `/students/:id` | admin | 3 | One profile by profile id |
 
-Field-level details are in each phase doc: [auth](phase-2-authentication-rbac.md), [students](phase-3-student-profile.md).
+## Jobs
+
+| Method | Path | Access | Phase | Description |
+|---|---|---|---|---|
+| GET | `/jobs` | signed in | 4 | List with `q`, `type`, `status`, `sort`, `page`, `limit`. Each job carries `eligible`/`reasons` for students |
+| GET | `/jobs/:id` | signed in | 4 | One job, same eligibility annotation for students |
+| POST | `/jobs` | admin | 4 | Create. Body: `title`, `company`, `description`, `type`, `deadline` (future), optional `location`, `ctc`, `eligibility` |
+| PUT | `/jobs/:id` | admin | 4 | **Partial** update — only sent fields change; `eligibility` sub-fields merge individually |
+| DELETE | `/jobs/:id` | admin | 4 | Delete |
+
+Field-level details are in each phase doc: [auth](phase-2-authentication-rbac.md), [students](phase-3-student-profile.md), [jobs](phase-4-jobs-eligibility.md).
 
 ## Planned
 
 | Area | Phase |
 |---|---|
-| Jobs (CRUD, eligibility flag) | 4 |
 | Applications (apply, withdraw, admin status updates) | 5 |

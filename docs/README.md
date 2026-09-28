@@ -12,7 +12,7 @@ CampusConnect is a full-stack campus placement management system. Students maint
 | [Phase 1: Backend foundation](phase-1-backend-foundation.md) | Express app structure, CORS, validation, error handling | Done |
 | [Phase 2: Authentication & RBAC](phase-2-authentication-rbac.md) | Register/login, JWT, role-based access, admin seeding | Done |
 | [Phase 3: Student profile](phase-3-student-profile.md) | Profile model, self-service endpoints, admin search | Done |
-| Phase 4: Jobs & eligibility | Job CRUD, eligibility engine | Planned |
+| [Phase 4: Jobs & eligibility](phase-4-jobs-eligibility.md) | Job CRUD, eligibility engine | Done |
 | Phase 5: Applications & status tracking | Apply, status pipeline | Planned |
 | Phase 6: Frontend foundation | Router, auth context, API client | Planned |
 | Phase 7: Frontend screens | Student and admin UI | Planned |
@@ -48,7 +48,7 @@ Server layout (`server/src`):
 | `models/` | Mongoose schemas |
 | `validators/` | zod schemas for request bodies, params and queries |
 | `middleware/` | `protect`, `authorize`, `validate`, error handling |
-| `utils/` | `ApiError`, JWT helpers, pagination, regex escaping |
+| `utils/` | `ApiError`, JWT helpers, pagination, regex escaping, the eligibility engine |
 | `constants/` | Shared fixed lists (e.g. branches) |
 | `scripts/` | One-off CLI tasks (admin seeding) |
 
@@ -64,6 +64,7 @@ The two things SQL does well that this project needs are covered:
 
 | SQL feature | MongoDB equivalent used here |
 |---|---|
+| Job eligibility rules varying per posting | Embedded `eligibility` object on each job (Phase 4) |
 | "One application per student per job" constraint | Unique compound index on `{student, job}` (Phase 5) |
 | Joins for admin views | `populate()` |
 
