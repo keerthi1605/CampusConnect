@@ -75,7 +75,7 @@ Being pure and DB-free, it will be reused by the apply endpoint in Phase 5 to re
 - **The `eligibility` object merges field-by-field**, not as a whole. `PUT /jobs/:id { status: "closed" }` changes only `status` — `minCgpa`, `branches` etc. are left as they were. Getting this right needed two separate zod schemas (see "Bug caught" below), because a schema field written as `min Cgpa.default(0).optional()` still applies `0` whenever the field is omitted, which would have reset it on every partial edit.
 - **Default `status=open` hides both closed and expired jobs.** A job whose deadline has quietly passed is still `status: "open"` in the database (nothing flips it automatically); the list query treats "past its deadline" the same as "closed" so students don't see stale postings by default. `status=all` or `status=closed` still reach it — a job's own detail page also stays reachable by id regardless of status, so a student who already saw or applied to it doesn't hit a dead link.
 - **Deadlines must be in the future on create**, rejecting an obviously wrong posting at the door. Updates that don't touch `deadline` are unaffected.
-- **No delete guard yet.** `DELETE /api/jobs/:id` removes the job outright. Phase 5 will need to decide what happens to a job's applications when it's deleted (block the delete, or cascade) — there's nothing to protect yet since applications don't exist.
+- **Delete guard (added in Phase 5).** In Phase 4 `DELETE /api/jobs/:id` removed the job outright, since no applications existed yet. Since Phase 5 it returns `409` if the job has any applications; close the job instead.
 
 ## Bug caught during verification
 

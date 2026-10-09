@@ -1,3 +1,4 @@
+import Application from '../models/Application.js';
 import Job from '../models/Job.js';
 import StudentProfile from '../models/StudentProfile.js';
 import ApiError from '../utils/ApiError.js';
@@ -80,6 +81,11 @@ export const updateJob = async (req, res) => {
 };
 
 export const deleteJob = async (req, res) => {
+  if (await Application.exists({ job: req.params.id })) {
+    // Deleting would orphan applications and erase students' history; closing keeps both
+    throw ApiError.conflict('This job has applications and cannot be deleted. Close it instead.');
+  }
+
   const job = await Job.findByIdAndDelete(req.params.id);
   if (!job) throw ApiError.notFound('Job not found');
   res.json({ success: true, message: 'Job deleted' });

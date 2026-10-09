@@ -13,7 +13,7 @@ CampusConnect is a full-stack campus placement management system. Students maint
 | [Phase 2: Authentication & RBAC](phase-2-authentication-rbac.md) | Register/login, JWT, role-based access, admin seeding | Done |
 | [Phase 3: Student profile](phase-3-student-profile.md) | Profile model, self-service endpoints, admin search | Done |
 | [Phase 4: Jobs & eligibility](phase-4-jobs-eligibility.md) | Job CRUD, eligibility engine | Done |
-| Phase 5: Applications & status tracking | Apply, status pipeline | Planned |
+| [Phase 5: Applications & status tracking](phase-5-applications.md) | Apply, withdraw, admin status pipeline | Done |
 | Phase 6: Frontend foundation | Router, auth context, API client | Planned |
 | Phase 7: Frontend screens | Student and admin UI | Planned |
 | Phase 8: Hardening & testing | Rate limiting, automated tests | Planned |
@@ -49,7 +49,7 @@ Server layout (`server/src`):
 | `validators/` | zod schemas for request bodies, params and queries |
 | `middleware/` | `protect`, `authorize`, `validate`, error handling |
 | `utils/` | `ApiError`, JWT helpers, pagination, regex escaping, the eligibility engine |
-| `constants/` | Shared fixed lists (e.g. branches) |
+| `constants/` | Shared fixed lists (branches, job types, application status transitions) |
 | `scripts/` | One-off CLI tasks (admin seeding) |
 
 ## Why MongoDB (and not SQL)

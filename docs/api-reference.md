@@ -42,12 +42,16 @@ This file grows with each phase.
 | GET | `/jobs/:id` | signed in | 4 | One job, same eligibility annotation for students |
 | POST | `/jobs` | admin | 4 | Create. Body: `title`, `company`, `description`, `type`, `deadline` (future), optional `location`, `ctc`, `eligibility` |
 | PUT | `/jobs/:id` | admin | 4 | **Partial** update — only sent fields change; `eligibility` sub-fields merge individually |
-| DELETE | `/jobs/:id` | admin | 4 | Delete |
+| DELETE | `/jobs/:id` | admin | 4 | Delete; `409` if the job has applications (close it instead) |
 
-Field-level details are in each phase doc: [auth](phase-2-authentication-rbac.md), [students](phase-3-student-profile.md), [jobs](phase-4-jobs-eligibility.md).
+## Applications
 
-## Planned
+| Method | Path | Access | Phase | Description |
+|---|---|---|---|---|
+| POST | `/jobs/:id/apply` | student | 5 | Apply. `403` + reasons if ineligible, `409` if already applied |
+| GET | `/applications/me` | student | 5 | Own applications with job populated. `status`, `page`, `limit` |
+| DELETE | `/applications/:id` | student | 5 | Withdraw (status becomes `withdrawn`). `409` once decided |
+| GET | `/jobs/:id/applications` | admin | 5 | Applicants with student name/email and profile academics. `status`, `page`, `limit` |
+| PATCH | `/applications/:id/status` | admin | 5 | Body: `status` (`shortlisted`, `interview`, `selected`, `rejected`), optional `remark`. Only legal transitions |
 
-| Area | Phase |
-|---|---|
-| Applications (apply, withdraw, admin status updates) | 5 |
+Field-level details are in each phase doc: [auth](phase-2-authentication-rbac.md), [students](phase-3-student-profile.md), [jobs](phase-4-jobs-eligibility.md), [applications](phase-5-applications.md).
