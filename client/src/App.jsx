@@ -1,26 +1,34 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'
-import './App.css'
+import { Route, Routes } from 'react-router-dom'
+import { GuestRoute, ProtectedRoute, RoleRoute, RootRedirect } from './auth/routeGuards'
+import Layout from './components/Layout'
+import { AdminHome, StudentHome } from './pages/Dashboards'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import { Forbidden, NotFound } from './pages/StatusPages'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
-
-function App() {
-  const [api, setApi] = useState('checking...')
-
-  useEffect(() => {
-    axios
-      .get(`${API_URL}/health`)
-      .then((res) => setApi(res.data.status))
-      .catch(() => setApi('unreachable'))
-  }, [])
-
+export default function App() {
   return (
-    <main>
-      <h1>CampusConnect</h1>
-      <p>Campus Placement Management System</p>
-      <p>API status: <strong>{api}</strong></p>
-    </main>
+    <Routes>
+      <Route path="/" element={<RootRedirect />} />
+
+      <Route element={<GuestRoute />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Route>
+
+      <Route element={<ProtectedRoute />}>
+        <Route element={<Layout />}>
+          <Route element={<RoleRoute roles={['student']} />}>
+            <Route path="/student" element={<StudentHome />} />
+          </Route>
+          <Route element={<RoleRoute roles={['admin']} />}>
+            <Route path="/admin" element={<AdminHome />} />
+          </Route>
+        </Route>
+      </Route>
+
+      <Route path="/forbidden" element={<Forbidden />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   )
 }
-
-export default App
