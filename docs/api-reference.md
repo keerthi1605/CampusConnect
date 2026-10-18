@@ -41,7 +41,7 @@ This file grows with each phase.
 | GET | `/jobs` | signed in | 4 | List with `q`, `type`, `status`, `sort`, `page`, `limit`. Each job carries `eligible`/`reasons` for students |
 | GET | `/jobs/:id` | signed in | 4 | One job, same eligibility annotation for students |
 | POST | `/jobs` | admin | 4 | Create. Body: `title`, `company`, `description`, `type`, `deadline` (future), optional `location`, `ctc`, `eligibility` |
-| PUT | `/jobs/:id` | admin | 4 | **Partial** update — only sent fields change; `eligibility` sub-fields merge individually |
+| PUT | `/jobs/:id` | admin | 4 | **Partial** update — only sent fields change; `eligibility` sub-fields merge individually; `null` clears `location`, `ctc`, `eligibility.maxBacklogs`, `eligibility.batchYear` |
 | DELETE | `/jobs/:id` | admin | 4 | Delete; `409` if the job has applications (close it instead) |
 
 ## Applications

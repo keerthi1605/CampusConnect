@@ -40,11 +40,17 @@ export const createJobSchema = {
 // Partial: only the fields the admin wants to change. Built from the same bare field
 // schemas as eligibilityInput, but with NO defaults, so an omitted field is left out of
 // the parsed result entirely (see the note above) rather than reset to 0 / [].
+//
+// For the optional fields, omitting means "leave as is" but null (or "") means "clear it",
+// otherwise an admin could never remove a backlog cap or CTC once it had been set.
+const clearable = (schema) =>
+  z.preprocess((v) => (v === '' ? null : v), schema.nullable().optional());
+
 const eligibilityPatch = z.object({
   minCgpa: minCgpaField.optional(),
   branches: branchesField.optional(),
-  maxBacklogs: emptyToUndefined(maxBacklogsField),
-  batchYear: emptyToUndefined(batchYearField),
+  maxBacklogs: clearable(maxBacklogsField),
+  batchYear: clearable(batchYearField),
 });
 
 export const updateJobSchema = {
@@ -53,9 +59,9 @@ export const updateJobSchema = {
       title: z.string().trim().min(2).max(150),
       company: z.string().trim().min(2).max(150),
       description: z.string().trim().min(10).max(5000),
-      location: emptyToUndefined(z.string().trim().max(150)),
+      location: clearable(z.string().trim().max(150)),
       type: z.enum(JOB_TYPES),
-      ctc: emptyToUndefined(z.number().min(0)),
+      ctc: clearable(z.number().min(0)),
       deadline: futureDeadline,
       status: z.enum(['open', 'closed']),
       eligibility: eligibilityPatch,

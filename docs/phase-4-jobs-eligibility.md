@@ -38,7 +38,7 @@
 | GET | `/api/jobs` | any signed-in user | Search, filter, sort, paginate |
 | GET | `/api/jobs/:id` | any signed-in user | One job |
 | POST | `/api/jobs` | admin | Create |
-| PUT | `/api/jobs/:id` | admin | **Partial** update (see below) |
+| PUT | `/api/jobs/:id` | admin | **Partial** update (see below); `null` clears an optional field |
 | DELETE | `/api/jobs/:id` | admin | Delete |
 | GET | `/api/meta/job-types` | public | Allowed `type` values |
 
@@ -72,6 +72,7 @@ Being pure and DB-free, it will be reused by the apply endpoint in Phase 5 to re
 ## Key decisions
 
 - **`PUT` is a partial update here, unlike the student profile's full-replace `PUT`.** An admin closing a job shouldn't have to resend the title, description and every eligibility rule. The route name stays `PUT` to match the plan's CRUD list, but the body is treated as a patch: only the fields sent are changed, and at least one field is required so an empty request can't silently succeed. This is a deliberate inconsistency with Phase 3's `PUT /students/me`, called out here so it isn't mistaken for an oversight.
+- **Omitting a field keeps it; `null` clears it.** For the optional fields (`location`, `ctc`, `eligibility.maxBacklogs`, `eligibility.batchYear`) a blank string is treated as `null`. Without this, an admin could never remove a backlog cap or CTC once it had been set (found while building the Phase 7 edit form). Cleared fields are stored as `null`, and the eligibility check ignores them.
 - **The `eligibility` object merges field-by-field**, not as a whole. `PUT /jobs/:id { status: "closed" }` changes only `status` — `minCgpa`, `branches` etc. are left as they were. Getting this right needed two separate zod schemas (see "Bug caught" below), because a schema field written as `min Cgpa.default(0).optional()` still applies `0` whenever the field is omitted, which would have reset it on every partial edit.
 - **Default `status=open` hides both closed and expired jobs.** A job whose deadline has quietly passed is still `status: "open"` in the database (nothing flips it automatically); the list query treats "past its deadline" the same as "closed" so students don't see stale postings by default. `status=all` or `status=closed` still reach it — a job's own detail page also stays reachable by id regardless of status, so a student who already saw or applied to it doesn't hit a dead link.
 - **Deadlines must be in the future on create**, rejecting an obviously wrong posting at the door. Updates that don't touch `deadline` are unaffected.
