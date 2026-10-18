@@ -1,10 +1,19 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { homePathFor, useAuth } from '../auth/useAuth'
 
-// Phase 7 adds the real links (jobs, applications, students...) for each role here
+// Each role's links; student pages live under /student/*, admin pages under /admin/*
 const NAV_LINKS = {
-  student: [{ to: '/student', label: 'Dashboard' }],
-  admin: [{ to: '/admin', label: 'Dashboard' }],
+  student: [
+    { to: '/student', label: 'Dashboard' },
+    { to: '/student/jobs', label: 'Jobs' },
+    { to: '/student/applications', label: 'Applications' },
+    { to: '/student/profile', label: 'Profile' },
+  ],
+  admin: [
+    { to: '/admin', label: 'Dashboard' },
+    { to: '/admin/jobs', label: 'Jobs' },
+    { to: '/admin/students', label: 'Students' },
+  ],
 }
 
 export default function Layout() {
@@ -25,7 +34,7 @@ export default function Layout() {
         </NavLink>
         <nav className="nav-links" aria-label="Main">
           {links.map((l) => (
-            <NavLink key={l.to} to={l.to} end>
+            <NavLink key={l.to} to={l.to} end={l.to === homePathFor(user.role)}>
               {l.label}
             </NavLink>
           ))}

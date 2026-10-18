@@ -15,7 +15,7 @@ CampusConnect is a full-stack campus placement management system. Students maint
 | [Phase 4: Jobs & eligibility](phase-4-jobs-eligibility.md) | Job CRUD, eligibility engine | Done |
 | [Phase 5: Applications & status tracking](phase-5-applications.md) | Apply, withdraw, admin status pipeline | Done |
 | [Phase 6: Frontend foundation](phase-6-frontend-foundation.md) | Router, auth context, API client, route guards | Done |
-| Phase 7: Frontend screens | Student and admin UI | Planned |
+| [Phase 7: Frontend screens](phase-7-frontend-screens.md) | Student and admin UI | Done |
 | Phase 8: Hardening & testing | Rate limiting, automated tests | Planned |
 | Phase 9: Deployment & docs | Hosting, final README | Planned |
 | [API reference](api-reference.md) | Every endpoint built so far | Living |
@@ -52,7 +52,7 @@ Server layout (`server/src`):
 | `constants/` | Shared fixed lists (branches, job types, application status transitions) |
 | `scripts/` | One-off CLI tasks (admin seeding) |
 
-Client layout (`client/src`): `api/` (axios client, token storage, error parsing), `auth/` (context, provider, route guards), `components/`, `pages/`. Details in [Phase 6](phase-6-frontend-foundation.md).
+Client layout (`client/src`): `api/` (axios client, token storage, error parsing), `auth/` (context, provider, route guards), `components/`, `hooks/`, `utils/`, `pages/student` and `pages/admin`. Details in [Phase 6](phase-6-frontend-foundation.md) and [Phase 7](phase-7-frontend-screens.md).
 
 ## Why MongoDB (and not SQL)
 
