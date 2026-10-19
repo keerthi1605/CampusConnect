@@ -16,7 +16,7 @@ CampusConnect is a full-stack campus placement management system. Students maint
 | [Phase 5: Applications & status tracking](phase-5-applications.md) | Apply, withdraw, admin status pipeline | Done |
 | [Phase 6: Frontend foundation](phase-6-frontend-foundation.md) | Router, auth context, API client, route guards | Done |
 | [Phase 7: Frontend screens](phase-7-frontend-screens.md) | Student and admin UI | Done |
-| Phase 8: Hardening & testing | Rate limiting, automated tests | Planned |
+| [Phase 8: Hardening & testing](phase-8-hardening-testing.md) | Rate limiting, body limits, 96 automated tests, demo data, error boundary | Done |
 | Phase 9: Deployment & docs | Hosting, final README | Planned |
 | [API reference](api-reference.md) | Every endpoint built so far | Living |
 
@@ -42,7 +42,7 @@ Server layout (`server/src`):
 
 | Folder | Responsibility |
 |---|---|
-| `config/` | DB connection, CORS options, environment checks |
+| `config/` | DB connection, CORS options, rate limits, environment checks |
 | `routes/` | URL → middleware chain → controller mapping only |
 | `controllers/` | Request handling and business logic |
 | `models/` | Mongoose schemas |
@@ -50,7 +50,8 @@ Server layout (`server/src`):
 | `middleware/` | `protect`, `authorize`, `validate`, error handling |
 | `utils/` | `ApiError`, JWT helpers, pagination, regex escaping, the eligibility engine |
 | `constants/` | Shared fixed lists (branches, job types, application status transitions) |
-| `scripts/` | One-off CLI tasks (admin seeding) |
+| `scripts/` | One-off CLI tasks (admin and demo-data seeding) |
+| `test/` (outside `src/`) | Automated tests (`npm test`) |
 
 Client layout (`client/src`): `api/` (axios client, token storage, error parsing), `auth/` (context, provider, route guards), `components/`, `hooks/`, `utils/`, `pages/student` and `pages/admin`. Details in [Phase 6](phase-6-frontend-foundation.md) and [Phase 7](phase-7-frontend-screens.md).
 
@@ -88,6 +89,12 @@ npm run dev               # http://localhost:5173
 
 # 3. Create the first admin (after setting ADMIN_EMAIL / ADMIN_PASSWORD in server/.env)
 cd server && npm run seed:admin
+
+# 4. Optional: demo students, jobs and applications (needs DEMO_PASSWORD set)
+cd server && npm run seed:demo
+
+# 5. Run the automated tests (uses a throwaway database on your MONGO_URI cluster)
+cd server && npm test
 ```
 
 ### Server environment variables (`server/.env`)
@@ -101,6 +108,8 @@ cd server && npm run seed:admin
 | `JWT_EXPIRES_IN` | no (`7d`) | Token lifetime |
 | `CLIENT_URL` | yes | Allowed CORS origin(s), comma-separated |
 | `ADMIN_NAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` | seed only | Used by `npm run seed:admin` |
+| `DEMO_PASSWORD` | seed only | Used by `npm run seed:demo` |
+| `TRUST_PROXY`, `BODY_LIMIT`, `RATE_LIMIT_API_MAX`, `AUTH_LOGIN_MAX`, `AUTH_LOGIN_IP_MAX`, `AUTH_REGISTER_MAX`, `BCRYPT_ROUNDS` | no | Hardening knobs, all with defaults; see [Phase 8](phase-8-hardening-testing.md) |
 
 Generate a secret with:
 

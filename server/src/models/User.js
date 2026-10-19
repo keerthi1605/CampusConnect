@@ -28,7 +28,8 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-const SALT_ROUNDS = 12;
+// Cost 12 in production; tests lower it (BCRYPT_ROUNDS) because hashing is deliberately slow
+const SALT_ROUNDS = Number(process.env.BCRYPT_ROUNDS) || 12;
 
 userSchema.statics.hashPassword = (plain) => bcrypt.hash(plain, SALT_ROUNDS);
 

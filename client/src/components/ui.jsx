@@ -6,7 +6,16 @@ export function StatusBadge({ status }) {
 
 /** Renders `children(data)` once loaded; shows loading and error states around it. */
 export function Async({ state, children }) {
-  if (state.error) return <FormError error={state.error} />
+  if (state.error) {
+    return (
+      <>
+        <FormError error={state.error} />
+        <button type="button" className="btn btn-ghost btn-sm retry" onClick={state.reload}>
+          Try again
+        </button>
+      </>
+    )
+  }
   if (!state.data) return <p className="muted">Loading…</p>
   return children(state.data)
 }
